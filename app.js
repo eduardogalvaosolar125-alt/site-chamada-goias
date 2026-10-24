@@ -51,24 +51,13 @@ function renderStudents(){
   });
 }
 function gotoHome(){currentTeacher=null;currentClass=null;show('home');byId('backBtn').classList.add('hidden')}
-function runSplash(){
-  const el=byId('splash');
-  if(!el)return;
-  el.style.display='grid';
-  el.classList.remove('hidden');
-  const finish=()=>{el.classList.add('hidden');el.style.display='none';el.setAttribute('aria-hidden','true')};
-  setTimeout(()=>{el.classList.add('out')},1900);
-  setTimeout(finish,2450);
-}
-window.addEventListener('error',()=>{const el=byId('splash');if(el){el.classList.add('hidden');el.style.display='none'}});
 byId('loginForm').onsubmit=e=>{
   e.preventDefault();
   byId('login').classList.add('hidden');
   byId('logout').classList.remove('hidden');
   byId('scopeLabel').textContent=role==='professor'?'ACESSO DO PROFESSOR':'ACESSO DO ALUNO';
   sessionStorage.setItem('gec-role',role);
-  runSplash();
-  setTimeout(()=>{show('home');renderTeachers()},1900);
+  show('home');renderTeachers();
 };
 document.querySelectorAll('.role').forEach(b=>b.onclick=()=>{
   role=b.dataset.role;
