@@ -11,6 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="animation-overrides.css">
+  <link rel="stylesheet" href="date-help.css">
 </head>
 <body>
   <div id="splash" class="splash" aria-label="Carregando Goiás Esporte Clube">
@@ -62,7 +64,7 @@
           <h1>Escolha a turma</h1>
           <p id="callDateLabel" class="muted"></p>
         </div>
-        <label class="date-field">Data da chamada<input id="callDate" type="date"></label>
+        <label class="date-field">Data da chamada<input id="callDate" type="date"><small class="date-help">Avança para a próxima aula após salvar. Para editar, escolha outra data.</small></label>
       </div>
       <div id="classGrid" class="class-grid"></div>
       <div id="completionBanner" class="completion-banner hidden"></div>

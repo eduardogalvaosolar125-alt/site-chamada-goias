@@ -24,6 +24,14 @@ function localDateInput(date = new Date()) {
   return `${y}-${m}-${d}`;
 }
 
+function nextClassDate(value) {
+  const date = new Date(`${value}T12:00:00`);
+  const day = date.getDay();
+  const daysUntilNext = day === 2 ? 2 : day === 4 ? 5 : day < 2 ? 2 - day : day < 4 ? 4 - day : 9 - day;
+  date.setDate(date.getDate() + daysUntilNext);
+  return localDateInput(date);
+}
+
 function dateLabel(value) {
   if (!value) return '';
   return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'full' }).format(new Date(`${value}T12:00:00`));
@@ -205,6 +213,7 @@ async function saveAttendance() {
     persist();
     toast(response.remote ? `${item.id} salva no Drive.` : response.submitted ? `${item.id} enviada para sincronização.` : `${item.id} salva neste dispositivo.`);
     await maybeCompleteDay(date, weekday);
+    $('callDate').value = nextClassDate(date);
     showView('callView');
     renderClasses();
   } catch (error) {
