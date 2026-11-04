@@ -1,10 +1,11 @@
 const ROOT_FOLDER_NAME = 'Frequência de turmas do Goiás Esporte Clube';
-const DEFAULT_EMAIL = 'COLOQUE_SEU_GMAIL_AQUI';
+const DEFAULT_EMAIL = 'professorjoaogec@gmail.com';
 const ALLOWED_CLASSES = {
   'VAG-01': { category: 'Sub-11', start: '16:00', end: '17:00' },
   'VAG-02': { category: 'Sub-13', start: '17:20', end: '18:20' },
   'VAG-03': { category: 'Sub-15', start: '18:20', end: '19:20' },
-  'VAG-04': { category: 'Sub-13', start: '19:20', end: '20:20' }
+  'VAG-04': { category: 'Sub-13', start: '19:20', end: '20:20' },
+  'VAG-05': { category: 'Sub-15', start: '20:20', end: '21:20' }
 };
 
 function doGet() {
@@ -37,7 +38,7 @@ function completeDay_(payload) {
   if (!payload.date || !Array.isArray(payload.files)) throw new Error('Data e arquivos são obrigatórios.');
   validateDate_(payload.date);
   if (payload.weekday !== 'Terça-feira' && payload.weekday !== 'Quinta-feira') throw new Error('O dia deve ser terça ou quinta-feira.');
-  payload.files.forEach(function(file) { if (!ALLOWED_CLASSES[file.classId]) throw new Error('Turma não autorizada: ' + file.classId); });
+  payload.files.forEach(function(file) { validateClassId_(file.classId); });
   const email = PropertiesService.getScriptProperties().getProperty('DESTINATION_EMAIL') || DEFAULT_EMAIL;
   if (!email || email === DEFAULT_EMAIL) return { ok: true, pendingEmail: true, files: payload.files.length };
   const key = 'email-sent-' + payload.date + '-' + (payload.weekday || 'dia');
@@ -87,8 +88,7 @@ function validatePayload_(payload) {
   if (!payload.date || !payload.classId || !Array.isArray(payload.students)) throw new Error('Data, turma e lista de alunas são obrigatórios.');
   validateDate_(payload.date);
   if (payload.weekday !== 'Terça-feira' && payload.weekday !== 'Quinta-feira') throw new Error('O dia deve ser terça ou quinta-feira.');
-  const allowed = ALLOWED_CLASSES[payload.classId];
-  if (!allowed) throw new Error('Turma não autorizada: ' + payload.classId);
+  validateClassId_(payload.classId);
   if (payload.students.length < 1 || payload.students.length > 80) throw new Error('Quantidade de alunas inválida.');
   payload.students.forEach(function(student) {
     if (!student || !String(student.name || '').trim()) throw new Error('Nome de aluna inválido.');
@@ -98,6 +98,10 @@ function validatePayload_(payload) {
 
 function validateDate_(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value))) throw new Error('Data inválida.');
+}
+
+function validateClassId_(value) {
+  if (!/^[A-Za-z0-9][A-Za-z0-9_-]{1,30}$/.test(String(value || ''))) throw new Error('Código de turma inválido: ' + value);
 }
 
 function safeWeekday_(value) {
