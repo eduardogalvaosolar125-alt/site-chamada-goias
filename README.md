@@ -4,6 +4,8 @@ Site interno para registrar a frequência das turmas de voleibol de terça e qui
 
 A primeira tela exibe o escudo com uma animação curta e oferece somente dois caminhos: **Chamada** e **Frequência de alunas**. A chamada permite escolher VAG-01 a VAG-04, marcar cada aluna como presente ou faltou e salvar o resultado do dia. A VAG-05 fica indicada como pendente até a lista de alunas ser confirmada.
 
+Dentro da chamada, a lista também permite adicionar uma nova aluna, transferir uma aluna para outra turma — sem oferecer a turma atual na seleção — e excluir uma aluna da turma. Essas alterações ficam persistidas no navegador do aparelho.
+
 ## Rodar localmente
 
 Na raiz do projeto, execute um servidor estático, por exemplo `python3 -m http.server 4173`, e abra `http://localhost:4173`.
@@ -20,4 +22,4 @@ Ao receber o fechamento do dia, envia um e-mail único com a data, as turmas e o
 
 ## Dados atuais
 
-As listas VAG-01 a VAG-04 foram transcritas das folhas enviadas e estão em `data.js`. A base contém 84 alunas. Nomes manuscritos e a VAG-05 aguardam confirmação.
+As listas VAG-01 a VAG-04 foram transcritas das folhas enviadas e estão em `data.js`. A base contém 84 alunas. Nomes manuscritos e a VAG-05 aguardam confirmação. A logo foi corrigida para JPEG binário válido e é usada na animação, no cabeçalho e no favicon.

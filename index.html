@@ -80,6 +80,7 @@
         <div id="studentList" class="student-list"></div>
         <div class="save-area">
           <p id="pendingNotice" class="pending-notice hidden"></p>
+          <button id="addStudent" class="secondary add-student">+ Adicionar nova aluna</button>
           <button id="saveAttendance" class="save-button">Salvar chamada desta turma</button>
         </div>
       </div>
@@ -98,6 +99,15 @@
   </main>
 
   <footer><span>Goiás Esporte Clube · Voleibol</span><span>Uso interno</span></footer>
+  <dialog id="studentDialog">
+    <form id="studentForm" method="dialog">
+      <p class="eyebrow" id="dialogEyebrow">ALUNA</p>
+      <h2 id="dialogTitle">Adicionar nova aluna</h2>
+      <label>Nome completo<input id="studentName" required autocomplete="off"></label>
+      <label id="targetClassLabel" class="hidden">Turma de destino<select id="targetClass"></select></label>
+      <div class="dialog-actions"><button type="button" id="cancelDialog" class="secondary">Cancelar</button><button type="submit" class="open-class" id="confirmDialog">Confirmar</button></div>
+    </form>
+  </dialog>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="data.js"></script>
   <script src="config.js"></script>

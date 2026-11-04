@@ -7,9 +7,9 @@ let state = loadState();
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    return { records: saved.records || {}, completed: saved.completed || {} };
+    return { records: saved.records || {}, completed: saved.completed || {}, rosters: saved.rosters || {} };
   } catch (_) {
-    return { records: {}, completed: {} };
+    return { records: {}, completed: {}, rosters: {} };
   }
 }
 
@@ -45,12 +45,16 @@ function currentClass() {
   return CLASSES.find((item) => item.id === currentClassId);
 }
 
+function studentsFor(item) {
+  return state.rosters[item.id] || item.students;
+}
+
 function recordFor(date, classId) {
   return state.records[recordKey(date, classId)];
 }
 
 function activeClasses() {
-  return CLASSES.filter((item) => !item.pending && item.students.length);
+  return CLASSES.filter((item) => !item.pending && studentsFor(item).length);
 }
 
 function selectedDate() {
@@ -104,31 +108,39 @@ function openAttendance(classId) {
   if (!item || item.pending) return;
   currentClassId = classId;
   const date = selectedDate();
+  const students = studentsFor(item);
   $('attendanceTitle').textContent = `${item.code} · ${item.start} às ${item.end}`;
   $('attendanceMeta').textContent = `${item.category} · ${capitalise(weekdayFor(date))} · ${dateLabel(date)}`;
-  $('attendanceEyebrow').textContent = `CHAMADA · ${item.students.length} ALUNAS`;
+  $('attendanceEyebrow').textContent = `CHAMADA · ${students.length} ALUNAS`;
   renderAttendance();
   showView('attendanceView');
 }
 
 function renderAttendance() {
   const item = currentClass();
+  const students = studentsFor(item);
   const date = selectedDate();
   const record = recordFor(date, item.id);
   const statuses = record ? record.statuses : {};
-  const marked = item.students.filter((name) => statuses[name]).length;
-  $('attendanceCount').textContent = `${marked} de ${item.students.length} marcadas`;
+  const marked = students.filter((name) => statuses[name]).length;
+  $('attendanceCount').textContent = `${marked} de ${students.length} marcadas`;
   $('attendanceHint').textContent = record ? `Salva às ${new Date(record.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}. Você pode editar e salvar novamente.` : 'Marque todas antes de salvar.';
   $('saveState').textContent = record ? 'SALVA' : 'NÃO SALVA';
   $('saveState').classList.toggle('saved', Boolean(record));
-  $('studentList').innerHTML = item.students.map((name, index) => {
+  $('studentList').innerHTML = students.map((name, index) => {
     const status = statuses[name] || '';
-    return `<div class="student"><div class="student-name"><span class="student-number">${index + 1}</span>${escapeHtml(name)}</div><div class="status-buttons"><button class="${status === 'present' ? 'active present' : ''}" data-status="present" data-name="${escapeAttr(name)}">Presente</button><button class="${status === 'absent' ? 'active absent' : ''}" data-status="absent" data-name="${escapeAttr(name)}">Faltou</button></div></div>`;
+    return `<div class="student"><div class="student-name"><span class="student-number">${index + 1}</span>${escapeHtml(name)}</div><div class="status-buttons"><button class="${status === 'present' ? 'active present' : ''}" data-status="present" data-name="${escapeAttr(name)}">Presente</button><button class="${status === 'absent' ? 'active absent' : ''}" data-status="absent" data-name="${escapeAttr(name)}">Faltou</button><span class="student-tools"><button type="button" title="Trocar aluna de turma" aria-label="Trocar aluna de turma" data-transfer="${escapeAttr(name)}">↔</button><button type="button" class="delete-student" title="Excluir aluna" aria-label="Excluir aluna" data-delete="${escapeAttr(name)}">×</button></span></div></div>`;
   }).join('');
   document.querySelectorAll('[data-status]').forEach((button) => {
     button.addEventListener('click', () => setStatus(button.dataset.name, button.dataset.status));
   });
-  const pending = item.students.filter((name) => !statuses[name]);
+  document.querySelectorAll('[data-transfer]').forEach((button) => {
+    button.addEventListener('click', () => openStudentDialog('transfer', button.dataset.transfer));
+  });
+  document.querySelectorAll('[data-delete]').forEach((button) => {
+    button.addEventListener('click', () => deleteStudent(button.dataset.delete));
+  });
+  const pending = students.filter((name) => !statuses[name]);
   if (pending.length) {
     $('pendingNotice').classList.remove('hidden');
     $('pendingNotice').textContent = `${pending.length} aluna(s) ainda não marcada(s).`;
@@ -154,9 +166,10 @@ function markAllPresent() {
   const date = selectedDate();
   const item = currentClass();
   if (!item) return;
+  const students = studentsFor(item);
   const key = recordKey(date, item.id);
   const existing = recordFor(date, item.id) || { statuses: {} };
-  item.students.forEach((name) => { existing.statuses[name] = 'present'; });
+  students.forEach((name) => { existing.statuses[name] = 'present'; });
   state.records[key] = existing;
   persist();
   renderAttendance();
@@ -166,10 +179,11 @@ function markAllPresent() {
 async function saveAttendance() {
   const date = selectedDate();
   const item = currentClass();
+  const studentsInClass = studentsFor(item);
   const record = recordFor(date, item.id);
-  if (!record || item.students.some((name) => !record.statuses[name])) return;
+  if (!record || studentsInClass.some((name) => !record.statuses[name])) return;
   const weekday = capitalise(weekdayFor(date));
-  const students = item.students.map((name) => ({ name, status: record.statuses[name] }));
+  const students = studentsInClass.map((name) => ({ name, status: record.statuses[name] }));
   const summary = {
     action: 'saveClass', date, weekday, classId: item.id, category: item.category,
     start: item.start, end: item.end, students
@@ -218,6 +232,75 @@ async function postToBackend(payload) {
   return { ...data, remote: true, submitted: false };
 }
 
+let dialogMode = 'add';
+let dialogStudent = '';
+
+function openStudentDialog(mode, name = '') {
+  const item = currentClass();
+  if (!item) return;
+  dialogMode = mode;
+  dialogStudent = name;
+  $('studentName').value = name;
+  $('studentName').readOnly = mode === 'transfer';
+  $('dialogTitle').textContent = mode === 'transfer' ? 'Trocar aluna de turma' : 'Adicionar nova aluna';
+  $('dialogEyebrow').textContent = mode === 'transfer' ? 'TRANSFERIR ALUNA' : `NOVA ALUNA · ${item.code}`;
+  $('targetClassLabel').classList.toggle('hidden', mode !== 'transfer');
+  if (mode === 'transfer') {
+    $('targetClass').innerHTML = CLASSES.filter((entry) => entry.id !== item.id && !entry.pending).map((entry) => `<option value="${entry.id}">${entry.code} · ${entry.start} às ${entry.end}</option>`).join('');
+  }
+  $('studentDialog').showModal();
+  if (mode === 'add') $('studentName').focus();
+}
+
+function closeStudentDialog() {
+  $('studentDialog').close();
+  $('studentName').value = '';
+  $('studentName').readOnly = false;
+}
+
+function setRoster(classId, names) {
+  state.rosters[classId] = [...new Set(names)];
+}
+
+function addStudent(name) {
+  const item = currentClass();
+  const trimmed = name.trim().replace(/\s+/g, ' ').toUpperCase();
+  if (!trimmed) return;
+  const duplicate = CLASSES.find((entry) => studentsFor(entry).some((student) => student.toLowerCase() === trimmed.toLowerCase()));
+  if (duplicate) { toast(`Essa aluna já está cadastrada na ${duplicate.id}.`); return; }
+  setRoster(item.id, [...studentsFor(item), trimmed]);
+  persist();
+  closeStudentDialog();
+  renderAttendance();
+  toast(`${trimmed} adicionada à ${item.id}.`);
+}
+
+function transferStudent(name, targetId) {
+  const source = currentClass();
+  const target = CLASSES.find((entry) => entry.id === targetId);
+  if (!source || !target || source.id === target.id) return;
+  const sourceNames = studentsFor(source).filter((student) => student !== name);
+  const targetNames = studentsFor(target);
+  if (targetNames.some((student) => student.toLowerCase() === name.toLowerCase())) { toast(`Essa aluna já está na ${target.id}.`); return; }
+  setRoster(source.id, sourceNames);
+  setRoster(target.id, [...targetNames, name]);
+  Object.values(state.records).forEach((record) => { if (record.classId === source.id && record.statuses) delete record.statuses[name]; });
+  persist();
+  closeStudentDialog();
+  renderAttendance();
+  toast(`${name} transferida para ${target.id}.`);
+}
+
+function deleteStudent(name) {
+  const item = currentClass();
+  if (!item || !window.confirm(`Excluir ${name} da ${item.id}?`)) return;
+  setRoster(item.id, studentsFor(item).filter((student) => student !== name));
+  Object.values(state.records).forEach((record) => { if (record.classId === item.id && record.statuses) delete record.statuses[name]; });
+  persist();
+  renderAttendance();
+  toast(`${name} excluída da ${item.id}.`);
+}
+
 function renderHistory() {
   const records = Object.values(state.records).sort((a, b) => String(b.savedAt).localeCompare(String(a.savedAt)));
   if (!records.length) {
@@ -259,6 +342,13 @@ $('backButton').addEventListener('click', () => {
 });
 $('markAllPresent').addEventListener('click', markAllPresent);
 $('saveAttendance').addEventListener('click', saveAttendance);
+$('addStudent').addEventListener('click', () => openStudentDialog('add'));
+$('cancelDialog').addEventListener('click', closeStudentDialog);
+$('studentForm').addEventListener('submit', (event) => {
+  event.preventDefault();
+  if (dialogMode === 'add') addStudent($('studentName').value);
+  else transferStudent(dialogStudent, $('targetClass').value);
+});
 
 window.setTimeout(() => {
   $('splash').classList.add('hidden');
