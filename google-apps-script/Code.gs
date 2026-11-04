@@ -14,7 +14,8 @@ function doGet() {
 
 function authorizeServices() {
   DriveApp.getRootFolder().getName();
-  DocumentApp.create('teste-autorizacao-goias').setTrashed(true);
+  const testDocument = DocumentApp.create('teste-autorizacao-goias');
+  DriveApp.getFileById(testDocument.getId()).setTrashed(true);
   MailApp.getRemainingDailyQuota();
   Logger.log('Drive, Documentos e Gmail autorizados.');
 }
