@@ -76,7 +76,9 @@ function createPdf_(folder, fileName, payload) {
   body.appendParagraph('Turma: ' + payload.classId + ' | Categoria: ' + (payload.category || '') + '\nData: ' + payload.date + ' | ' + (payload.weekday || '') + '\nHorário: ' + (payload.start || '') + ' às ' + (payload.end || ''));
   const table = body.appendTable([['Aluna', 'Situação']]);
   payload.students.forEach(function(student) {
-    table.appendTableRow().appendTableCell(String(student.name || '')).getParentTableRow().appendTableCell(labelStatus_(student.status));
+    const row = table.appendTableRow();
+    row.appendTableCell(String(student.name || ''));
+    row.appendTableCell(labelStatus_(student.status));
   });
   body.appendParagraph('Gerado em ' + new Date().toLocaleString('pt-BR'));
   temp.saveAndClose();
