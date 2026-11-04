@@ -7,9 +7,9 @@ let state = loadState();
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    return { records: saved.records || {}, completed: saved.completed || {}, rosters: saved.rosters || {} };
+    return { records: saved.records || {}, completed: saved.completed || {}, rosters: saved.rosters || {}, customClasses: saved.customClasses || [] };
   } catch (_) {
-    return { records: {}, completed: {}, rosters: {} };
+    return { records: {}, completed: {}, rosters: {}, customClasses: [] };
   }
 }
 
@@ -42,7 +42,11 @@ function recordKey(date, classId) {
 }
 
 function currentClass() {
-  return CLASSES.find((item) => item.id === currentClassId);
+  return allClasses().find((item) => item.id === currentClassId);
+}
+
+function allClasses() {
+  return [...CLASSES, ...(state.customClasses || [])];
 }
 
 function studentsFor(item) {
@@ -54,7 +58,7 @@ function recordFor(date, classId) {
 }
 
 function activeClasses() {
-  return CLASSES.filter((item) => !item.pending && studentsFor(item).length);
+  return allClasses().filter((item) => !item.pending && studentsFor(item).length);
 }
 
 function selectedDate() {
@@ -62,7 +66,7 @@ function selectedDate() {
 }
 
 function showView(id) {
-  ['homeView', 'callView', 'attendanceView', 'historyView'].forEach((viewId) => {
+  ['homeView', 'callView', 'attendanceView', 'historyView', 'manageView'].forEach((viewId) => {
     $(viewId).classList.toggle('hidden', viewId !== id);
   });
   currentView = id;
@@ -75,7 +79,7 @@ function renderClasses() {
   const weekday = capitalise(weekdayFor(date));
   const validDay = weekday === 'Terça-feira' || weekday === 'Quinta-feira';
   $('callDateLabel').textContent = validDay ? dateLabel(date) : `${dateLabel(date)} · escolha uma terça ou quinta-feira`;
-  $('classGrid').innerHTML = CLASSES.map((item) => {
+  $('classGrid').innerHTML = allClasses().map((item) => {
     const record = recordFor(date, item.id);
     const saved = Boolean(record);
     const disabled = item.pending || !validDay;
@@ -104,7 +108,7 @@ function renderClasses() {
 }
 
 function openAttendance(classId) {
-  const item = CLASSES.find((entry) => entry.id === classId);
+  const item = allClasses().find((entry) => entry.id === classId);
   if (!item || item.pending) return;
   currentClassId = classId;
   const date = selectedDate();
@@ -129,13 +133,16 @@ function renderAttendance() {
   $('saveState').classList.toggle('saved', Boolean(record));
   $('studentList').innerHTML = students.map((name, index) => {
     const status = statuses[name] || '';
-    return `<div class="student"><div class="student-name"><span class="student-number">${index + 1}</span>${escapeHtml(name)}</div><div class="status-buttons"><button class="${status === 'present' ? 'active present' : ''}" data-status="present" data-name="${escapeAttr(name)}">Presente</button><button class="${status === 'absent' ? 'active absent' : ''}" data-status="absent" data-name="${escapeAttr(name)}">Faltou</button><span class="student-tools"><button type="button" title="Trocar aluna de turma" aria-label="Trocar aluna de turma" data-transfer="${escapeAttr(name)}">↔</button><button type="button" class="delete-student" title="Excluir aluna" aria-label="Excluir aluna" data-delete="${escapeAttr(name)}">×</button></span></div></div>`;
+    return `<div class="student"><div class="student-name"><span class="student-number">${index + 1}</span>${escapeHtml(name)}</div><div class="status-buttons"><button class="${status === 'present' ? 'active present' : ''}" data-status="present" data-name="${escapeAttr(name)}">Presente</button><button class="${status === 'absent' ? 'active absent' : ''}" data-status="absent" data-name="${escapeAttr(name)}">Faltou</button><span class="student-tools"><button type="button" title="Editar nome" aria-label="Editar nome" data-rename="${escapeAttr(name)}">✎</button><button type="button" title="Trocar aluna de turma" aria-label="Trocar aluna de turma" data-transfer="${escapeAttr(name)}">↔</button><button type="button" class="delete-student" title="Excluir aluna" aria-label="Excluir aluna" data-delete="${escapeAttr(name)}">×</button></span></div></div>`;
   }).join('');
   document.querySelectorAll('[data-status]').forEach((button) => {
     button.addEventListener('click', () => setStatus(button.dataset.name, button.dataset.status));
   });
   document.querySelectorAll('[data-transfer]').forEach((button) => {
     button.addEventListener('click', () => openStudentDialog('transfer', button.dataset.transfer));
+  });
+  document.querySelectorAll('[data-rename]').forEach((button) => {
+    button.addEventListener('click', () => openStudentDialog('rename', button.dataset.rename));
   });
   document.querySelectorAll('[data-delete]').forEach((button) => {
     button.addEventListener('click', () => deleteStudent(button.dataset.delete));
@@ -242,14 +249,14 @@ function openStudentDialog(mode, name = '') {
   dialogStudent = name;
   $('studentName').value = name;
   $('studentName').readOnly = mode === 'transfer';
-  $('dialogTitle').textContent = mode === 'transfer' ? 'Trocar aluna de turma' : 'Adicionar nova aluna';
-  $('dialogEyebrow').textContent = mode === 'transfer' ? 'TRANSFERIR ALUNA' : `NOVA ALUNA · ${item.code}`;
+  $('dialogTitle').textContent = mode === 'transfer' ? 'Trocar aluna de turma' : mode === 'rename' ? 'Editar nome da aluna' : 'Adicionar nova aluna';
+  $('dialogEyebrow').textContent = mode === 'transfer' ? 'TRANSFERIR ALUNA' : mode === 'rename' ? 'EDITAR NOME' : `NOVA ALUNA · ${item.code}`;
   $('targetClassLabel').classList.toggle('hidden', mode !== 'transfer');
   if (mode === 'transfer') {
-    $('targetClass').innerHTML = CLASSES.filter((entry) => entry.id !== item.id && !entry.pending).map((entry) => `<option value="${entry.id}">${entry.code} · ${entry.start} às ${entry.end}</option>`).join('');
+    $('targetClass').innerHTML = allClasses().filter((entry) => entry.id !== item.id && !entry.pending).map((entry) => `<option value="${entry.id}">${entry.code} · ${entry.start} às ${entry.end}</option>`).join('');
   }
   $('studentDialog').showModal();
-  if (mode === 'add') $('studentName').focus();
+  if (mode !== 'transfer') $('studentName').focus();
 }
 
 function closeStudentDialog() {
@@ -266,7 +273,7 @@ function addStudent(name) {
   const item = currentClass();
   const trimmed = name.trim().replace(/\s+/g, ' ').toUpperCase();
   if (!trimmed) return;
-  const duplicate = CLASSES.find((entry) => studentsFor(entry).some((student) => student.toLowerCase() === trimmed.toLowerCase()));
+  const duplicate = allClasses().find((entry) => studentsFor(entry).some((student) => student.toLowerCase() === trimmed.toLowerCase()));
   if (duplicate) { toast(`Essa aluna já está cadastrada na ${duplicate.id}.`); return; }
   setRoster(item.id, [...studentsFor(item), trimmed]);
   persist();
@@ -277,7 +284,7 @@ function addStudent(name) {
 
 function transferStudent(name, targetId) {
   const source = currentClass();
-  const target = CLASSES.find((entry) => entry.id === targetId);
+  const target = allClasses().find((entry) => entry.id === targetId);
   if (!source || !target || source.id === target.id) return;
   const sourceNames = studentsFor(source).filter((student) => student !== name);
   const targetNames = studentsFor(target);
@@ -299,6 +306,37 @@ function deleteStudent(name) {
   persist();
   renderAttendance();
   toast(`${name} excluída da ${item.id}.`);
+}
+
+function renameStudent(oldName, newName) {
+  const item = currentClass();
+  const name = newName.trim().replace(/\s+/g, ' ').toUpperCase();
+  if (!item || !name) return;
+  if (studentsFor(item).some((student) => student !== oldName && student.toLowerCase() === name.toLowerCase())) { toast('Já existe uma aluna com esse nome nesta turma.'); return; }
+  setRoster(item.id, studentsFor(item).map((student) => student === oldName ? name : student).sort((a, b) => a.localeCompare(b, 'pt-BR')));
+  Object.values(state.records).forEach((record) => { if (record.classId === item.id && record.statuses && record.statuses[oldName]) { record.statuses[name] = record.statuses[oldName]; delete record.statuses[oldName]; } });
+  persist(); closeStudentDialog(); renderAttendance(); toast('Nome atualizado.');
+}
+
+function parseNames(text) {
+  return [...new Set(text.split(/[\n,;]+/).map((name) => name.trim().replace(/\s+/g, ' ').toUpperCase()).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+}
+
+function renderManage() {
+  $('manageList').innerHTML = allClasses().map((item) => `<article class="manage-card card"><div class="manage-card-head"><div><b>${escapeHtml(item.code)}</b><span>${escapeHtml(item.start)} às ${escapeHtml(item.end)} · ${escapeHtml(item.category)}</span></div><span class="tag">${studentsFor(item).length} alunas</span></div><textarea data-roster="${escapeAttr(item.id)}" rows="5">${escapeHtml(studentsFor(item).join('\n'))}</textarea><button class="open-class save-roster" data-save-roster="${escapeAttr(item.id)}">Salvar lista em ordem alfabética</button></article>`).join('');
+  document.querySelectorAll('[data-save-roster]').forEach((button) => button.addEventListener('click', () => {
+    const item = allClasses().find((entry) => entry.id === button.dataset.saveRoster);
+    const names = parseNames(document.querySelector(`[data-roster="${CSS.escape(item.id)}"]`).value);
+    setRoster(item.id, names); persist(); renderManage(); toast(`${item.code}: lista atualizada com ${names.length} alunas.`);
+  }));
+}
+
+function createClass(form) {
+  const code = form.code.value.trim().toUpperCase();
+  if (allClasses().some((item) => item.id === code || item.code === code)) { toast('Já existe uma turma com esse código.'); return; }
+  const days = form.day.value === 'Terça e quinta' ? ['Terça-feira', 'Quinta-feira'] : [form.day.value];
+  const item = { id: code, code, days, start: form.start.value, end: form.end.value, category: form.category.value.trim(), students: parseNames(form.students.value), pending: false };
+  state.customClasses.push(item); setRoster(item.id, item.students); persist(); $('classDialog').close(); $('classForm').reset(); renderManage(); toast(`${code} criada com ${item.students.length} alunas.`);
 }
 
 function renderHistory() {
@@ -335,6 +373,7 @@ $('callDate').value = localDateInput();
 $('callDate').addEventListener('change', () => { if (currentView === 'callView') renderClasses(); });
 $('openCall').addEventListener('click', () => { showView('callView'); renderClasses(); });
 $('openHistory').addEventListener('click', () => { showView('historyView'); renderHistory(); });
+$('openManage').addEventListener('click', () => { showView('manageView'); renderManage(); });
 $('brandButton').addEventListener('click', () => showView('homeView'));
 $('backButton').addEventListener('click', () => {
   if (currentView === 'attendanceView') { showView('callView'); renderClasses(); }
@@ -347,8 +386,12 @@ $('cancelDialog').addEventListener('click', closeStudentDialog);
 $('studentForm').addEventListener('submit', (event) => {
   event.preventDefault();
   if (dialogMode === 'add') addStudent($('studentName').value);
+  else if (dialogMode === 'rename') renameStudent(dialogStudent, $('studentName').value);
   else transferStudent(dialogStudent, $('targetClass').value);
 });
+$('newClass').addEventListener('click', () => $('classDialog').showModal());
+$('cancelClass').addEventListener('click', () => $('classDialog').close());
+$('classForm').addEventListener('submit', (event) => { event.preventDefault(); createClass({ code: $('classCode'), day: $('classDay'), category: $('classCategory'), start: $('classStart'), end: $('classEnd'), students: $('classStudents') }); });
 
 window.setTimeout(() => {
   $('splash').classList.add('hidden');

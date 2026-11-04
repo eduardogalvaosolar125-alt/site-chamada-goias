@@ -145,7 +145,19 @@ const CLASSES = [
     "start": "20:20",
     "end": "21:20",
     "category": "Sub-15",
-    "students": [],
-    "pending": true
+    "students": [
+      "ANA LÍVIA",
+      "ANA MEL",
+      "CLARA",
+      "CLARICE",
+      "ESTHER",
+      "JULIANA",
+      "JÚLIA",
+      "LAÍS COSTA",
+      "LAÍS GUERRA",
+      "MELISSA",
+      "SOFIA"
+    ],
+    "pending": false
   }
 ];

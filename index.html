@@ -46,6 +46,11 @@
             <span><b>Frequência de alunas</b><small>Consultar chamadas salvas</small></span>
             <span class="arrow">›</span>
           </button>
+          <button id="openManage" class="main-action secondary-action">
+            <span class="action-icon">⚙</span>
+            <span><b>Gerenciar turmas</b><small>Editar listas e criar turmas</small></span>
+            <span class="arrow">›</span>
+          </button>
         </div>
       </div>
     </section>
@@ -96,6 +101,11 @@
       </div>
       <div id="historyList" class="history-list"></div>
     </section>
+
+    <section id="manageView" class="view hidden">
+      <div class="page-head"><div><p class="eyebrow">CONFIGURAÇÃO</p><h1>Gerenciar turmas</h1><p class="muted">Edite nomes, cole uma lista completa ou crie uma nova turma.</p></div><button id="newClass" class="open-class">+ Nova turma</button></div>
+      <div id="manageList" class="manage-list"></div>
+    </section>
   </main>
 
   <footer><span>Goiás Esporte Clube · Voleibol</span><span>Uso interno</span></footer>
@@ -106,6 +116,16 @@
       <label>Nome completo<input id="studentName" required autocomplete="off"></label>
       <label id="targetClassLabel" class="hidden">Turma de destino<select id="targetClass"></select></label>
       <div class="dialog-actions"><button type="button" id="cancelDialog" class="secondary">Cancelar</button><button type="submit" class="open-class" id="confirmDialog">Confirmar</button></div>
+    </form>
+  </dialog>
+  <dialog id="classDialog">
+    <form id="classForm" method="dialog">
+      <p class="eyebrow">NOVA TURMA</p><h2>Criar turma</h2>
+      <label>Nome ou código<input id="classCode" required placeholder="Ex.: VAG-06"></label>
+      <div class="two-fields"><label>Dia<select id="classDay"><option>Terça-feira</option><option>Quinta-feira</option><option>Terça e quinta</option></select></label><label>Categoria<input id="classCategory" required placeholder="Ex.: Sub-15"></label></div>
+      <div class="two-fields"><label>Início<input id="classStart" type="time" required></label><label>Fim<input id="classEnd" type="time" required></label></div>
+      <label>Lista de alunas <span class="muted">(uma por linha ou separada por vírgula)</span><textarea id="classStudents" rows="7" placeholder="ANA SILVA\nMARIA SOUZA"></textarea></label>
+      <div class="dialog-actions"><button type="button" id="cancelClass" class="secondary">Cancelar</button><button type="submit" class="open-class">Criar turma</button></div>
     </form>
   </dialog>
   <div id="toast" role="status" aria-live="polite"></div>
