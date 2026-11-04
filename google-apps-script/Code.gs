@@ -12,6 +12,13 @@ function doGet() {
   return json_({ ok: true, service: 'frequencia-goias', message: 'Endpoint ativo.' });
 }
 
+function authorizeServices() {
+  DriveApp.getRootFolder().getName();
+  DocumentApp.create('teste-autorizacao-goias').setTrashed(true);
+  MailApp.getRemainingDailyQuota();
+  Logger.log('Drive, Documentos e Gmail autorizados.');
+}
+
 function doPost(e) {
   try {
     const payload = JSON.parse((e && e.postData && e.postData.contents) || '{}');

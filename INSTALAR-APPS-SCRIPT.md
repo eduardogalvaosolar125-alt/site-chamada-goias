@@ -10,14 +10,14 @@
 
 ## 2. Autorizar Drive e Gmail
 
-1. No seletor de funções do editor, escolha `doGet`.
+1. No seletor de funções do editor, escolha `authorizeServices`.
 2. Clique em **Executar**.
 3. Escolha **Revisar permissões**.
 4. Selecione a conta `professorjoaogec@gmail.com`.
 5. Se aparecer o aviso de aplicativo não verificado, escolha **Avançado → Ir para Goiás Esporte Clube — Backend de frequência (não seguro)**.
 6. Clique em **Permitir** para acesso ao Drive, Documentos e envio de e-mail.
 
-O primeiro teste retorna `Endpoint ativo.`. Essa execução também autoriza os serviços usados para criar as pastas e os PDFs.
+Essa execução solicita os serviços usados para criar pastas, documentos/PDFs e enviar e-mails. Ela cria e envia para a lixeira um documento temporário de autorização.
 
 ## 3. Publicar como Web App
 
