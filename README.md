@@ -1,25 +1,23 @@
-# Turmas de Voleibol - Goiás Esporte Clube
+# Frequência — Goiás Esporte Clube
 
-## Como usar
-1. Abra `index.html` no navegador.
-2. Escolha **Sou professor** ou **Sou aluno** e entre com os dados que já aparecem preenchidos.
+Site interno para registrar a frequência das turmas de voleibol de terça e quinta-feira.
 
-## Navegação
-1. Tela principal com os cinco professores: Monique, João, Gabriel, André e Rogério.
-2. Toque no professor para abrir a lista de turmas dele.
-3. Escolha o horário.
-4. Abra a área da turma e faça a chamada.
+A primeira tela exibe o escudo com uma animação curta e oferece somente dois caminhos: **Chamada** e **Frequência de alunas**. A chamada permite escolher VAG-01 a VAG-04, marcar cada aluna como presente ou faltou e salvar o resultado do dia. A VAG-05 fica indicada como pendente até a lista de alunas ser confirmada.
 
-## Perfis
-- **Professor:** visualiza e gerencia as turmas, com cadastro e exclusão de atletas.
-- **Aluno:** mesma navegação visual, sem as permissões administrativas.
+## Rodar localmente
 
-## Recursos
-- Organização por professor e horário, sem misturar turmas de professores diferentes
-- Presença, atraso, ausência e justificativa por dia
-- Animação de entrada com o mascote após o login
-- Escudo do clube no cabeçalho, no login e no ícone da aba
-- Layout responsivo para celular, tablet e computador
+Na raiz do projeto, execute um servidor estático, por exemplo `python3 -m http.server 4173`, e abra `http://localhost:4173`.
 
-## Importante
-Protótipo sem servidor: os dados ficam no navegador. Para uso oficial ainda é necessário banco de dados, autenticação real, cópias de segurança e adequação à LGPD. Quadras e categorias marcadas como "A confirmar" aguardam definição da comissão técnica.
+## Drive e e-mail
+
+A interface já envia um payload estável para a URL definida em `config.js`. O backend de referência está em `google-apps-script/Code.gs`. Ele deve ser implantado pelo proprietário da conta Google como Web App, com a pasta raiz e o e-mail configurados dentro do Apps Script. Depois da implantação, copie somente a URL `/exec` para `config.js`.
+
+O backend organiza os arquivos nesta estrutura:
+
+`Frequência de turmas do Goiás Esporte Clube / Terça-feira ou Quinta-feira / DD-MM-AAAA / PDF da turma`
+
+Ao receber o fechamento do dia, envia um e-mail único com a data, as turmas e os links dos PDFs. Não coloque senha, token ou segredo no GitHub. O endpoint sem autenticação é adequado apenas para um teste controlado; para uso real, deve ser protegido por autenticação do Google ou por um backend privado.
+
+## Dados atuais
+
+As listas VAG-01 a VAG-04 foram transcritas das folhas enviadas e estão em `data.js`. A base contém 84 alunas. Nomes manuscritos e a VAG-05 aguardam confirmação.

@@ -1,53 +1,106 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Goiás Esporte Clube | Turmas de Voleibol</title>
-<meta name="description" content="Gerenciamento das turmas de voleibol do Goiás Esporte Clube.">
-<link rel="icon" href="assets/escudo.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css"></head>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#004d2c">
+  <meta name="description" content="Frequência das turmas de voleibol do Goiás Esporte Clube.">
+  <title>Frequência · Goiás Esporte Clube</title>
+  <link rel="icon" href="assets/escudo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-<header class="topbar"><div class="brand"><img class="crest" src="assets/escudo.jpg" alt="Escudo do Goiás Esporte Clube"><div class="brandText"><strong>GOIÁS ESPORTE CLUBE</strong><span>Voleibol · Gerenciamento de turmas</span></div></div><div class="headerActions"><button id="backBtn" class="ghost hidden">Voltar</button><button id="logout" class="ghost hidden">Sair</button></div></header>
-<div class="stripe"></div>
-<main>
-<section id="login" class="login card">
-  <img class="loginCrest" src="assets/escudo.jpg" alt="Escudo do Goiás Esporte Clube">
-  <h1>Turmas de Voleibol</h1><p>Escolha o tipo de acesso para entrar</p>
-  <div class="roleTabs" role="tablist">
-    <button class="role active" data-role="professor">Sou professor</button>
-    <button class="role" data-role="aluno">Sou aluno</button>
+  <div id="splash" class="splash" aria-label="Carregando Goiás Esporte Clube">
+    <div class="splash-ring"></div>
+    <img src="assets/escudo.jpg" alt="Escudo do Goiás Esporte Clube">
+    <strong>GOIÁS ESPORTE CLUBE</strong>
+    <span>Frequência de turmas</span>
   </div>
-  <form id="loginForm">
-    <label>E-mail<input required type="email" id="email" value="professor@goias.com.br"></label>
-    <label>Senha<input required type="password" id="senha" value="123456"></label>
-    <button type="submit">Entrar</button>
-  </form>
-  <small id="loginHint">Protótipo: os dados ficam salvos neste navegador. Os acessos têm permissões diferentes.</small>
-</section>
 
-<section id="home" class="hidden">
-  <div class="pageHead"><div><p class="eyebrow" id="scopeLabel">ACESSO DO PROFESSOR</p><h1>Escolha o professor</h1><span id="today"></span></div></div>
-  <div id="teacherGrid" class="teacherGrid"></div>
-</section>
+  <header class="topbar">
+    <button id="brandButton" class="brand" aria-label="Voltar ao início">
+      <img class="crest" src="assets/escudo.jpg" alt="Escudo do Goiás Esporte Clube">
+      <span><b>GOIÁS ESPORTE CLUBE</b><small>Voleibol · Frequência</small></span>
+    </button>
+    <button id="backButton" class="ghost hidden">Voltar</button>
+  </header>
+  <div class="stripe"></div>
 
-<section id="teacherPage" class="hidden">
-  <div class="pageHead"><div><p class="eyebrow">TURMAS DO PROFESSOR</p><h1 id="teacherName"></h1><span id="teacherMeta"></span></div></div>
-  <div id="classGrid" class="classGrid"></div>
-</section>
+  <main>
+    <section id="homeView" class="view hidden">
+      <div class="welcome card">
+        <p class="eyebrow">ÁREA INTERNA</p>
+        <h1>Frequência das turmas</h1>
+        <p class="lead">Escolha o que deseja fazer hoje.</p>
+        <div class="home-actions">
+          <button id="openCall" class="main-action">
+            <span class="action-icon">✓</span>
+            <span><b>Chamada</b><small>Marcar presença e falta</small></span>
+            <span class="arrow">›</span>
+          </button>
+          <button id="openHistory" class="main-action secondary-action">
+            <span class="action-icon">▤</span>
+            <span><b>Frequência de alunas</b><small>Consultar chamadas salvas</small></span>
+            <span class="arrow">›</span>
+          </button>
+        </div>
+      </div>
+    </section>
 
-<section id="classPage" class="hidden">
-  <div class="classHeader card">
-    <div><p class="eyebrow" id="classTeacher"></p><h1 id="className"></h1><div class="classFacts" id="classFacts"></div></div>
-    <button id="allPresent" class="secondary">Marcar todos presentes</button>
-  </div>
-  <div class="card attendance">
-    <div class="sectionHead"><h2>Chamada</h2><div class="toolbar"><input id="search" placeholder="Buscar atleta..."><select id="filter"><option value="all">Todos</option><option value="pending">Pendentes</option><option value="present">Presentes</option><option value="late">Atrasados</option><option value="absent">Ausentes</option><option value="excused">Justificados</option></select></div></div>
-    <div id="studentList"></div>
-    <div class="actions"><button id="newStudent" class="secondary">+ Adicionar atleta</button><button id="save">Salvar chamada</button></div>
-  </div>
-</section>
-</main>
-<footer class="foot"><span>Goiás Esporte Clube · Voleibol</span><span>Projeto interno de controle de frequência</span></footer>
-<img id="mascote" class="mascote hidden" src="assets/mascote.jpg" alt="Mascote do Goiás Esporte Clube">
-<dialog id="studentDialog"><form method="dialog" id="studentForm"><h2>Novo atleta</h2><label>Nome completo<input id="studentName" required></label><div><button value="cancel" class="ghost">Cancelar</button><button value="default">Adicionar</button></div></form></dialog>
-<div id="toast"></div><script src="app.js"></script></body></html>
+    <section id="callView" class="view hidden">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">CHAMADA</p>
+          <h1>Escolha a turma</h1>
+          <p id="callDateLabel" class="muted"></p>
+        </div>
+        <label class="date-field">Data da chamada<input id="callDate" type="date"></label>
+      </div>
+      <div id="classGrid" class="class-grid"></div>
+      <div id="completionBanner" class="completion-banner hidden"></div>
+    </section>
+
+    <section id="attendanceView" class="view hidden">
+      <div class="page-head compact-head">
+        <div>
+          <p class="eyebrow" id="attendanceEyebrow">CHAMADA</p>
+          <h1 id="attendanceTitle"></h1>
+          <p id="attendanceMeta" class="muted"></p>
+        </div>
+        <button id="markAllPresent" class="secondary">Marcar todas presentes</button>
+      </div>
+      <div class="card attendance-card">
+        <div class="attendance-top">
+          <div><b id="attendanceCount">0 alunas</b><span id="attendanceHint" class="muted">Marque todas antes de salvar.</span></div>
+          <span id="saveState" class="status-pill"></span>
+        </div>
+        <div id="studentList" class="student-list"></div>
+        <div class="save-area">
+          <p id="pendingNotice" class="pending-notice hidden"></p>
+          <button id="saveAttendance" class="save-button">Salvar chamada desta turma</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="historyView" class="view hidden">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">HISTÓRICO</p>
+          <h1>Frequência de alunas</h1>
+          <p class="muted">Chamadas salvas neste dispositivo.</p>
+        </div>
+      </div>
+      <div id="historyList" class="history-list"></div>
+    </section>
+  </main>
+
+  <footer><span>Goiás Esporte Clube · Voleibol</span><span>Uso interno</span></footer>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="data.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

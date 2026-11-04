@@ -1,79 +1,266 @@
-const TEACHERS=[{"id":"monique","name":"Monique","turmas":[{"id":"monique-t10","dia":"Terça e Quinta","inicio":"10h00","fim":"11h00","quadra":"Quadra 3","categoria":"A confirmar"},{"id":"monique-t14","dia":"Terça e Quinta","inicio":"14h00","fim":"15h00","quadra":"Quadra 3","categoria":"A confirmar"},{"id":"monique-t15","dia":"Terça e Quinta","inicio":"15h00","fim":"16h00","quadra":"Quadra 3","categoria":"A confirmar"},{"id":"monique-t16","dia":"Terça e Quinta","inicio":"16h00","fim":"17h00","quadra":"Quadra 1","categoria":"Iniciação"},{"id":"monique-q3","dia":"Segunda e Quarta","inicio":"A confirmar","fim":"","quadra":"Quadra 3","categoria":"A confirmar"}]},{"id":"joao","name":"João","turmas":[{"id":"joao-t16","dia":"Terça e Quinta","inicio":"16h00","fim":"17h00","quadra":"Quadra 2","categoria":"Iniciação"},{"id":"joao-t1720","dia":"Terça e Quinta","inicio":"17h20","fim":"18h20","quadra":"Quadra 1","categoria":"A confirmar"},{"id":"joao-t1820","dia":"Terça e Quinta","inicio":"18h20","fim":"19h20","quadra":"Quadra 1","categoria":"A confirmar"},{"id":"joao-t1920","dia":"Terça e Quinta","inicio":"19h20","fim":"20h20","quadra":"Quadra 1","categoria":"A confirmar"},{"id":"joao-t2020","dia":"Terça e Quinta","inicio":"20h20","fim":"21h20","quadra":"Quadra 1","categoria":"Copa SESI"},{"id":"joao-seg","dia":"Segunda e Quarta","inicio":"19h00","fim":"20h00","quadra":"Quadra 1","categoria":"A confirmar"},{"id":"joao-seg2","dia":"Segunda e Quarta","inicio":"20h00","fim":"21h00","quadra":"Quadra 1","categoria":"A confirmar"}]},{"id":"gabriel","name":"Gabriel","turmas":[{"id":"gab-t1710","dia":"Terça e Quinta","inicio":"17h10","fim":"18h10","quadra":"Quadra 2","categoria":"A confirmar"},{"id":"gab-t1810","dia":"Terça e Quinta","inicio":"18h10","fim":"19h10","quadra":"Quadra 2","categoria":"A confirmar"},{"id":"gab-t1910","dia":"Terça e Quinta","inicio":"19h10","fim":"20h10","quadra":"Quadra 2","categoria":"A confirmar"},{"id":"gab-t2010","dia":"Terça e Quinta","inicio":"20h10","fim":"21h10","quadra":"Quadra 2","categoria":"A confirmar"},{"id":"gab-seg-q1","dia":"Segunda e Quarta","inicio":"18h00","fim":"19h00","quadra":"Quadra 2","categoria":"A confirmar"},{"id":"gab-seg-q2","dia":"Segunda e Quarta","inicio":"18h00","fim":"19h00","quadra":"Quadra 2","categoria":"A confirmar"},{"id":"gab-seg-q1b","dia":"Segunda e Quarta","inicio":"19h00","fim":"20h00","quadra":"Quadra 2","categoria":"A confirmar"},{"id":"gab-seg-q2b","dia":"Segunda e Quarta","inicio":"19h00","fim":"20h00","quadra":"Quadra 2","categoria":"A confirmar"}]},{"id":"andre","name":"André","turmas":[{"id":"and-t16","dia":"Terça e Quinta","inicio":"16h00","fim":"17h00","quadra":"Quadra 3","categoria":"Iniciação"},{"id":"and-t17","dia":"Terça e Quinta","inicio":"17h00","fim":"18h00","quadra":"Quadra 3","categoria":"A confirmar"},{"id":"and-t18","dia":"Terça e Quinta","inicio":"18h00","fim":"19h00","quadra":"Quadra 3","categoria":"A confirmar"},{"id":"and-t19","dia":"Terça e Quinta","inicio":"19h00","fim":"20h00","quadra":"Quadra 3","categoria":"A confirmar"},{"id":"and-t20","dia":"Terça e Quinta","inicio":"20h00","fim":"21h00","quadra":"Quadra 3","categoria":"A confirmar"},{"id":"and-q3","dia":"Segunda e Quarta","inicio":"A confirmar","fim":"","quadra":"Quadra 3","categoria":"A confirmar"}]},{"id":"rogerio","name":"Rogério","turmas":[{"id":"rog-t15","dia":"Terça e Quinta","inicio":"15h00","fim":"16h00","quadra":"Quadra 1","categoria":"A confirmar"},{"id":"rog-sub19","dia":"Terça","inicio":"20h20","fim":"21h20","quadra":"Quadra 1","categoria":"Sub-19"},{"id":"rog-seg","dia":"Segunda e Quarta","inicio":"19h00","fim":"20h00","quadra":"Quadra 1","categoria":"A confirmar"},{"id":"rog-seg2","dia":"Segunda e Quarta","inicio":"20h00","fim":"21h00","quadra":"Quadra 1","categoria":"A confirmar"}]}];
-const initial={classes:[{"id":"monique-t10","teacher":"Monique","name":"Monique · 10h00 às 11h00","time":"10h00 às 11h00","day":"Terça e Quinta","place":"Quadra 3","category":"A confirmar","students":["ANA CLARA BARBOSA LIMA","ANA BEATRIZ SPINDRINHA SANTANA BORGES","LUIS LEO BESSA","LYS FERNANDES GRANGE","MANUELA CEZILIO SANTOS","MARIA DE LOURDES SOLAREVISCHY COELHO","VALENTINA FERREIRA DE OLIVEIRA"]},{"id":"monique-t14","teacher":"Monique","name":"Monique · 14h00 às 15h00","time":"14h00 às 15h00","day":"Terça e Quinta","place":"Quadra 3","category":"A confirmar","students":["ANA CLARA OLIVEIRA LIMA BUBNIAK","ANA SARA LALA LISBOA","BEATRIZ DE CASTRO AMUI","ELOA ROSA SILVA","ISABELA PEDROSO PENA","ISADORA DAMASCENA DE AVILA","ISADORA ROSA CAETANO","ISIS VIEIRA GONCALVES DINIZ","LUAS PACHELITAS","LAURA AVELAR ALVES","LOISA MARQUES COSTA","MANUELA BEZERRA RIBEIRO","MARIANA SANTOS BRANDÃO","RAFAELA FERNANDES RODRIGUES","RAFAELA MARTINS DA CUNHA","VALENTINA OLIVEIRA MANATA FONTES","VALENTINA PIRES MENDONÇA ARAUJO","YASMIN PEREZ DA CRUZ"]},{"id":"monique-t15","teacher":"Monique","name":"Monique · 15h00 às 16h00","time":"15h00 às 16h00","day":"Terça e Quinta","place":"Quadra 3","category":"A confirmar","students":["ANA CAROLINE PANTALEAO RESENDE","CLARA BRANDÃO CERQUEIRA LEITE","ISABELA NOLETO RIBEIRO","ISABELLE SOUZA MARTIN","JULIA TEIXEIRA GONCALVES","JULIA VALENTE VIEIRA DA CRUZ","LUISA BARROS PITA PIRES","MANUELA FLORENCIO DE SOUSA ALMEIDA","MANUELA GARGANO SOUZA","MARIA EDUARDA MARTINS RODRIGUES","MARIA EDUARDA OLIVEIRA DO CARMO","MARIA LUISA REIS STIVAL","MARIA LUIZA COELHO AGUIAR","MARIANA RAYANE MIRANDA","RAISA TAVARES LIMA","SARA MARQUES","SOFIA DAHER HOAG RORIZ CRUVINEL","SOFIA VIEIRA BONIFACIO AZEVEDO","SOPHIA TOLEDO BUENO","TEODORA CHAVESLLO NEIVA"]},{"id":"monique-t16","teacher":"Monique","name":"Monique · 16h00 às 17h00","time":"16h00 às 17h00","day":"Terça e Quinta","place":"Quadra 1","category":"Iniciação","students":["ALICE SILVA ABRANTES","ANA JULIA TELES VAZ","CAROLINA FELICIO MANOEL","HELEN HORACIO TORQUATO","HELENA BATISTA LOBATO","HELENA PEREZ","HELENA ROSA DIAS","HELENA TAVARES DE OLIVEIRA","JULIA DE MEDEIROS BORGES SANTANA","JULIA DIAS FRANCISCO GUERRA","LAURA TOLENTINO CORREA","LAVINIA MACHADO DE ARAUJO AGUENA SOARES","MANUELA MONHES BRASILENSE","MARCELA PEDROSO AIRES","MARIA CAROLTA ALVES RAMOS JUBE","MAYA DUARTE TEIXEIRA","MAYARA SIQUEIRA VILLELA","OLIVIA GUERRA MELO E CUNHA","SOFIA GOUVEIA ALMEIDA"]},{"id":"monique-q3","teacher":"Monique","name":"Monique · A confirmar","time":"A confirmar","day":"Segunda e Quarta","place":"Quadra 3","category":"A confirmar","students":[]},{"id":"joao-t16","teacher":"João","name":"João · 16h00 às 17h00","time":"16h00 às 17h00","day":"Terça e Quinta","place":"Quadra 2","category":"Iniciação","students":["ALICE AIRES GONCALVES DA FONSECA","ALICE QUINTA FERREIRA DE LIMA","BETINA PINTO SCARTEZINI","ELISA FERREIRA PINHO","ELISA VIEIRA GONCALVES DINIZ","ISADORA PRADO FREITAS","LUIANA ANTUNES PIMENTA","LUHANA VIEIRA RESENDE","LUISA RODRIGUES DE OLIVEIRA ABREU","LUHANA MAYARA CARDOSO CAMPOS","MANUELA RADY NUNES","MARIA GABRIELA FERNANDES AVELAR","MARIA EDUARDA RIBEIRO CURADO","MARIA HENKES VIAN BARBOSA","SARAH BRUNA RODRIGUES DINIZ"]},{"id":"joao-t1720","teacher":"João","name":"João · 17h20 às 18h20","time":"17h20 às 18h20","day":"Terça e Quinta","place":"Quadra 1","category":"A confirmar","students":["ALYNE TEIXEIRA LAGO","ANA BEATRIZ SILVA CAIXETA","ANA JULIA MAGALHAES BREVES","AYLA GAMA RODRIGUES","ELISA FLORENTINO FERRO","FERNANDA MARTINS BORGES","GABRIELA COSTA SANTOS","HELENA SAMPAIO FRANCA","ISABELA OLIVEIRA COELHO","MAJU CARIGNI","MANUELLA RAULINO DE LELLIS MOURA","MARIA LUISA GUIMARAES PARREIRA","MARIA MACHADO COUTO","MORALISA REZENDE BASTOS","SARAH LIMA CARDOSO","YASMIN FIORETTI VALE BARBOSA"]},{"id":"joao-t1820","teacher":"João","name":"João · 18h20 às 19h20","time":"18h20 às 19h20","day":"Terça e Quinta","place":"Quadra 1","category":"A confirmar","students":["ANA JULYA ROSA DA PAZ","ANA LIMA DE DEUS ANJOS","ANGELINA GUIDI AGUIAR","ANTONELLA FELIX QUEIROZ DE OLIVEIRA","BIANCA MACHADO DE CASTRO","CAROLINA KANEGAE LEMES","CECILIA GUIMARAES FERREIRA PEDROSO","ELIS CALAÇA AMARAL","ESTHER PASSOS FERREIRA MAIA JACINDI","GABRIELA FRANKLIN DE LACERDA","ISABELA DE CASTRO MOREIRA","ISADORA ARAUJO KHOURY","JULIANA P RIBEIRO DA S FREITAS","LAIS AZEVEDO COELHO","LAIS GONCALVES GUERRA","LAURA ANDRADE LOBO","LAURA FELICIO MANOEL","MARIA JULIA PRADO FLORENCO","MELISSA NEVES PINHEIRO","NAYARA PINHEIRO"]},{"id":"joao-t1920","teacher":"João","name":"João · 19h20 às 20h20","time":"19h20 às 20h20","day":"Terça e Quinta","place":"Quadra 1","category":"A confirmar","students":["ALICE FERREIRA CARVALHO","ANA CLARA SILVA COELHO","ANA LAURA DELGADO FERREIRA","ANA VITORIA DA SILVA QUEIROZ","BARBARA BRAGA CARNEIRO","BETINA VASQUES DAMAZIO","CLARA MARIA SENA DA SILVA","CECILIA GERVASIO DE LIMA","ESTHER ABNER PIMENTA","HELENA CABRAL ROSA BRAGA","HELENA PAULIN CAMILO","HELENA LUCENA DE FIGUEIREDO","ISABELA DE CASTRO SOUSA","ISADORA PANNHOS AZZI","ISABELA PITELKOW ALBUQUERQUE MONTES","ISADORA LAZARA MOSCOWICZ OSORIO","LAURA FERREIRA CAVALCANTE","LAURA LUCENA DE FIGUEIREDO","LAURA MARQUES DE CARVALHO","LUISA ANDRADE LOBO"]},{"id":"joao-t2020","teacher":"João","name":"João · 20h20 às 21h20","time":"20h20 às 21h20","day":"Terça e Quinta","place":"Quadra 1","category":"Copa SESI","students":["LUIZA MARINHO DE LIMA","MANUELA ARAUJO SIFUENTES","MARIA LUISA VELOSO RIBEIRO DE OLIVEIRA","MARIA MORAES SENA SILVA","MILENA GUIMARAES GOMES","RAFAELA PANNHOS AZZI","SARA RIBEIRO FERNANDES MELO"]},{"id":"joao-seg","teacher":"João","name":"João · 19h00 às 20h00","time":"19h00 às 20h00","day":"Segunda e Quarta","place":"Quadra 1","category":"A confirmar","students":[]},{"id":"joao-seg2","teacher":"João","name":"João · 20h00 às 21h00","time":"20h00 às 21h00","day":"Segunda e Quarta","place":"Quadra 1","category":"A confirmar","students":[]},{"id":"gab-t1710","teacher":"Gabriel","name":"Gabriel · 17h10 às 18h10","time":"17h10 às 18h10","day":"Terça e Quinta","place":"Quadra 2","category":"A confirmar","students":[]},{"id":"gab-t1810","teacher":"Gabriel","name":"Gabriel · 18h10 às 19h10","time":"18h10 às 19h10","day":"Terça e Quinta","place":"Quadra 2","category":"A confirmar","students":[]},{"id":"gab-t1910","teacher":"Gabriel","name":"Gabriel · 19h10 às 20h10","time":"19h10 às 20h10","day":"Terça e Quinta","place":"Quadra 2","category":"A confirmar","students":[]},{"id":"gab-t2010","teacher":"Gabriel","name":"Gabriel · 20h10 às 21h10","time":"20h10 às 21h10","day":"Terça e Quinta","place":"Quadra 2","category":"A confirmar","students":[]},{"id":"gab-seg-q1","teacher":"Gabriel","name":"Gabriel · 18h00 às 19h00","time":"18h00 às 19h00","day":"Segunda e Quarta","place":"Quadra 2","category":"A confirmar","students":[]},{"id":"gab-seg-q2","teacher":"Gabriel","name":"Gabriel · 18h00 às 19h00","time":"18h00 às 19h00","day":"Segunda e Quarta","place":"Quadra 2","category":"A confirmar","students":[]},{"id":"gab-seg-q1b","teacher":"Gabriel","name":"Gabriel · 19h00 às 20h00","time":"19h00 às 20h00","day":"Segunda e Quarta","place":"Quadra 2","category":"A confirmar","students":[]},{"id":"gab-seg-q2b","teacher":"Gabriel","name":"Gabriel · 19h00 às 20h00","time":"19h00 às 20h00","day":"Segunda e Quarta","place":"Quadra 2","category":"A confirmar","students":[]},{"id":"and-t16","teacher":"André","name":"André · 16h00 às 17h00","time":"16h00 às 17h00","day":"Terça e Quinta","place":"Quadra 3","category":"Iniciação","students":[]},{"id":"and-t17","teacher":"André","name":"André · 17h00 às 18h00","time":"17h00 às 18h00","day":"Terça e Quinta","place":"Quadra 3","category":"A confirmar","students":[]},{"id":"and-t18","teacher":"André","name":"André · 18h00 às 19h00","time":"18h00 às 19h00","day":"Terça e Quinta","place":"Quadra 3","category":"A confirmar","students":[]},{"id":"and-t19","teacher":"André","name":"André · 19h00 às 20h00","time":"19h00 às 20h00","day":"Terça e Quinta","place":"Quadra 3","category":"A confirmar","students":[]},{"id":"and-t20","teacher":"André","name":"André · 20h00 às 21h00","time":"20h00 às 21h00","day":"Terça e Quinta","place":"Quadra 3","category":"A confirmar","students":[]},{"id":"and-q3","teacher":"André","name":"André · A confirmar","time":"A confirmar","day":"Segunda e Quarta","place":"Quadra 3","category":"A confirmar","students":[]},{"id":"rog-t15","teacher":"Rogério","name":"Rogério · 15h00 às 16h00","time":"15h00 às 16h00","day":"Terça e Quinta","place":"Quadra 1","category":"A confirmar","students":[]},{"id":"rog-sub19","teacher":"Rogério","name":"Rogério · 20h20 às 21h20","time":"20h20 às 21h20","day":"Terça","place":"Quadra 1","category":"Sub-19","students":[]},{"id":"rog-seg","teacher":"Rogério","name":"Rogério · 19h00 às 20h00","time":"19h00 às 20h00","day":"Segunda e Quarta","place":"Quadra 1","category":"A confirmar","students":[]},{"id":"rog-seg2","teacher":"Rogério","name":"Rogério · 20h00 às 21h00","time":"20h00 às 21h00","day":"Segunda e Quarta","place":"Quadra 1","category":"A confirmar","students":[]}],attendance:{}};
- const stored=JSON.parse(localStorage.getItem('gec-v3'));
- let data=stored?{...initial,...stored,classes:initial.classes.map(base=>{const old=stored.classes?.find(c=>c.id===base.id);return old?{...base,...old,students:[...new Set([...base.students,...(old.students||[])])]}:base})}:initial;
-let role='professor', currentTeacher=null, currentClass=null;
-const byId=id=>document.getElementById(id);
-const save=()=>localStorage.setItem('gec-v3',JSON.stringify(data));
-const dayKey=id=>new Date().toISOString().slice(0,10)+'-'+id;
-const statuses=()=>data.attendance[dayKey(currentClass)]||(data.attendance[dayKey(currentClass)]={});
-const show=id=>['login','home','teacherPage','classPage'].forEach(s=>byId(s).classList.toggle('hidden',s!==id));
-const turma=()=>data.classes.find(c=>c.id===currentClass);
+const STORAGE_KEY = 'gec-frequency-v1';
+const $ = (id) => document.getElementById(id);
+let currentView = 'homeView';
+let currentClassId = null;
+let state = loadState();
 
-function renderTeachers(){
-  byId('teacherGrid').innerHTML=TEACHERS.map(t=>'<button class="teacherCard" data-t="'+t.id+'"><span class="avatar">'+t.name[0]+'</span><b>'+t.name+'</b><span>Turmas de voleibol · '+t.turmas.length+' horários</span><em>ACESSAR TURMAS</em></button>').join('');
-  document.querySelectorAll('.teacherCard').forEach(c=>c.onclick=()=>openTeacher(c.dataset.t));
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    return { records: saved.records || {}, completed: saved.completed || {} };
+  } catch (_) {
+    return { records: {}, completed: {} };
+  }
 }
-function openTeacher(id){
-  const t=TEACHERS.find(x=>x.id===id);currentTeacher=id;
-  byId('teacherName').textContent=t.name;
-  byId('teacherMeta').textContent='Turmas de '+t.name+' · toque em um horário para abrir a área da turma';
-  const list=data.classes.filter(c=>c.teacher===t.name);
-  byId('classGrid').innerHTML=list.map(c=>{
-    const parts='<div class="info"><div><b>PROFESSOR</b><span>'+c.teacher+'</span></div><div><b>CATEGORIA</b><span>'+c.category+'</span></div><div><b>QUADRA</b><span>'+c.place+'</span></div><div><b>DIAS</b><span>'+c.day+'</span></div></div>';
-    const time=c.time||'A confirmar';
-    return '<div class="classRow"><div><div class="time">'+time+'</div><span class="teacherTag">'+c.teacher.toUpperCase()+'</span></div>'+parts+'<button class="secondary" data-c="'+c.id+'">Abrir turma</button></div>';
-  }).join('')||'<p>Nenhuma turma vinculada.</p>';
-  document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>openClass(b.dataset.c));
-  if(role==='aluno'){byId('newStudent').classList.add('hidden');}
-  else byId('newStudent').classList.remove('hidden');
-  show('teacherPage');byId('backBtn').classList.remove('hidden');
+
+function persist() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
-function openClass(id){
-  currentClass=id;const c=turma();
-  byId('className').textContent=c.time;
-  byId('classTeacher').textContent='TURMA DE '+c.teacher.toUpperCase();
-  byId('classFacts').innerHTML='<span><b>Professor:</b> '+c.teacher+'</span><span><b>Categoria:</b> '+c.category+'</span><span><b>Quadra:</b> '+c.place+'</span><span><b>Dias:</b> '+c.day+'</span>';
-  renderStudents();show('classPage');
+
+function localDateInput(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
 }
-function renderStudents(){
-  const c=turma(),s=statuses(),q=byId('search').value.toLowerCase(),f=byId('filter').value;
-  const rows=c.students.filter(n=>n.toLowerCase().includes(q)&&(f==='all'||(f==='pending'&&!s[n])||s[n]===f));
-  byId('studentList').innerHTML=rows.map(n=>{
-    const ini=n.split(' ').map(x=>x[0]).slice(0,2).join('');
-    const opts=[['present','Presente'],['late','Atrasado'],['absent','Ausente'],['excused','Justificado']].map(a=>'<button class="'+(s[n]===a[0]?'active ':'')+a[0]+'" data-status="'+a[0]+'">'+a[1]+'</button>').join('');
-    const remove=role==='professor'?'<button class="remove" data-remove="1">Excluir</button>':'';
-    return '<div class="student"><div class="studentInfo"><div class="avatar">'+ini+'</div><b>'+n+'</b></div><div class="status" data-name="'+n+'">'+opts+remove+'</div></div>';
-  }).join('')||'<p>Nenhum atleta cadastrado nesta turma ainda.</p>';
-  document.querySelectorAll('.status button').forEach(b=>b.onclick=()=>{
-    const n=b.parentElement.dataset.name;
-    if(b.dataset.remove){if(confirm('Excluir '+n+' da turma?')){c.students=c.students.filter(x=>x!==n);delete s[n];save();renderStudents()}}
-    else{s[n]=b.dataset.status;save();renderStudents()}
+
+function dateLabel(value) {
+  if (!value) return '';
+  return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'full' }).format(new Date(`${value}T12:00:00`));
+}
+
+function weekdayFor(value) {
+  return new Intl.DateTimeFormat('pt-BR', { weekday: 'long' }).format(new Date(`${value}T12:00:00`));
+}
+
+function capitalise(value) {
+  return value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+}
+
+function recordKey(date, classId) {
+  return `${date}__${classId}`;
+}
+
+function currentClass() {
+  return CLASSES.find((item) => item.id === currentClassId);
+}
+
+function recordFor(date, classId) {
+  return state.records[recordKey(date, classId)];
+}
+
+function activeClasses() {
+  return CLASSES.filter((item) => !item.pending && item.students.length);
+}
+
+function selectedDate() {
+  return $('callDate').value || localDateInput();
+}
+
+function showView(id) {
+  ['homeView', 'callView', 'attendanceView', 'historyView'].forEach((viewId) => {
+    $(viewId).classList.toggle('hidden', viewId !== id);
   });
+  currentView = id;
+  $('backButton').classList.toggle('hidden', id === 'homeView');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function gotoHome(){currentTeacher=null;currentClass=null;show('home');byId('backBtn').classList.add('hidden')}
-byId('loginForm').onsubmit=e=>{
-  e.preventDefault();
-  byId('login').classList.add('hidden');
-  byId('logout').classList.remove('hidden');
-  byId('scopeLabel').textContent=role==='professor'?'ACESSO DO PROFESSOR':'ACESSO DO ALUNO';
-  sessionStorage.setItem('gec-role',role);
-  show('home');renderTeachers();
-};
-document.querySelectorAll('.role').forEach(b=>b.onclick=()=>{
-  role=b.dataset.role;
-  document.querySelectorAll('.role').forEach(x=>x.classList.toggle('active',x===b));
-  byId('email').value=role==='aluno'?'aluno@goias.com.br':'professor@goias.com.br';
-  byId('loginHint').textContent=role==='aluno'?'Acesso do aluno: consulta turmas, horários e chamada. Sem permissões administrativas.':'Acesso do professor: visualiza e gerencia as turmas sob sua responsabilidade.';
+
+function renderClasses() {
+  const date = selectedDate();
+  const weekday = capitalise(weekdayFor(date));
+  const validDay = weekday === 'Terça-feira' || weekday === 'Quinta-feira';
+  $('callDateLabel').textContent = validDay ? dateLabel(date) : `${dateLabel(date)} · escolha uma terça ou quinta-feira`;
+  $('classGrid').innerHTML = CLASSES.map((item) => {
+    const record = recordFor(date, item.id);
+    const saved = Boolean(record);
+    const disabled = item.pending || !validDay;
+    const status = item.pending ? 'Lista pendente' : saved ? `${record.present} presentes · ${record.absent} faltas` : 'Ainda não salva';
+    return `<article class="class-row${item.pending ? ' pending' : ''}">
+      <div><div class="class-code">${escapeHtml(item.code)}</div><div class="class-time">${item.start} às ${item.end}</div></div>
+      <div><b>${escapeHtml(item.category)}</b><div class="class-detail"><span class="tag">${escapeHtml(weekday)}</span><span class="tag${item.pending ? ' pending' : ''}">${escapeHtml(status)}</span></div></div>
+      <button class="open-class" data-class="${item.id}" ${disabled ? 'disabled' : ''}>${item.pending ? 'Aguardando lista' : saved ? 'Editar chamada' : 'Abrir chamada'}</button>
+    </article>`;
+  }).join('');
+  document.querySelectorAll('[data-class]').forEach((button) => {
+    button.addEventListener('click', () => openAttendance(button.dataset.class));
+  });
+  const required = activeClasses();
+  const savedCount = required.filter((item) => recordFor(date, item.id)).length;
+  const completed = state.completed[`${date}__${weekday}`];
+  if (completed) {
+    $('completionBanner').classList.remove('hidden');
+    $('completionBanner').textContent = completed.remote && !completed.pendingEmail ? 'Todas as turmas do dia foram salvas. O aviso foi enviado e os PDFs estão no Drive.' : completed.remote && completed.pendingEmail ? 'Todas as turmas estão no Drive, mas o Gmail ainda não foi configurado.' : completed.submitted ? 'Todas as turmas estão salvas. O envio para o Drive foi solicitado; confirme a resposta do backend quando ele estiver configurado.' : 'Todas as turmas do dia foram salvas neste dispositivo. Configure o Drive para gerar os PDFs e enviar o e-mail.';
+  } else if (savedCount === required.length && required.length) {
+    $('completionBanner').classList.remove('hidden');
+    $('completionBanner').textContent = 'Todas as turmas estão salvas. O fechamento do dia será concluído automaticamente.';
+  } else {
+    $('completionBanner').classList.add('hidden');
+  }
+}
+
+function openAttendance(classId) {
+  const item = CLASSES.find((entry) => entry.id === classId);
+  if (!item || item.pending) return;
+  currentClassId = classId;
+  const date = selectedDate();
+  $('attendanceTitle').textContent = `${item.code} · ${item.start} às ${item.end}`;
+  $('attendanceMeta').textContent = `${item.category} · ${capitalise(weekdayFor(date))} · ${dateLabel(date)}`;
+  $('attendanceEyebrow').textContent = `CHAMADA · ${item.students.length} ALUNAS`;
+  renderAttendance();
+  showView('attendanceView');
+}
+
+function renderAttendance() {
+  const item = currentClass();
+  const date = selectedDate();
+  const record = recordFor(date, item.id);
+  const statuses = record ? record.statuses : {};
+  const marked = item.students.filter((name) => statuses[name]).length;
+  $('attendanceCount').textContent = `${marked} de ${item.students.length} marcadas`;
+  $('attendanceHint').textContent = record ? `Salva às ${new Date(record.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}. Você pode editar e salvar novamente.` : 'Marque todas antes de salvar.';
+  $('saveState').textContent = record ? 'SALVA' : 'NÃO SALVA';
+  $('saveState').classList.toggle('saved', Boolean(record));
+  $('studentList').innerHTML = item.students.map((name, index) => {
+    const status = statuses[name] || '';
+    return `<div class="student"><div class="student-name"><span class="student-number">${index + 1}</span>${escapeHtml(name)}</div><div class="status-buttons"><button class="${status === 'present' ? 'active present' : ''}" data-status="present" data-name="${escapeAttr(name)}">Presente</button><button class="${status === 'absent' ? 'active absent' : ''}" data-status="absent" data-name="${escapeAttr(name)}">Faltou</button></div></div>`;
+  }).join('');
+  document.querySelectorAll('[data-status]').forEach((button) => {
+    button.addEventListener('click', () => setStatus(button.dataset.name, button.dataset.status));
+  });
+  const pending = item.students.filter((name) => !statuses[name]);
+  if (pending.length) {
+    $('pendingNotice').classList.remove('hidden');
+    $('pendingNotice').textContent = `${pending.length} aluna(s) ainda não marcada(s).`;
+    $('saveAttendance').disabled = true;
+  } else {
+    $('pendingNotice').classList.add('hidden');
+    $('saveAttendance').disabled = false;
+  }
+}
+
+function setStatus(name, status) {
+  const date = selectedDate();
+  const item = currentClass();
+  const key = recordKey(date, item.id);
+  const existing = recordFor(date, item.id) || { statuses: {} };
+  existing.statuses[name] = status;
+  state.records[key] = existing;
+  persist();
+  renderAttendance();
+}
+
+function markAllPresent() {
+  const date = selectedDate();
+  const item = currentClass();
+  if (!item) return;
+  const key = recordKey(date, item.id);
+  const existing = recordFor(date, item.id) || { statuses: {} };
+  item.students.forEach((name) => { existing.statuses[name] = 'present'; });
+  state.records[key] = existing;
+  persist();
+  renderAttendance();
+  toast('Todas as alunas foram marcadas como presentes.');
+}
+
+async function saveAttendance() {
+  const date = selectedDate();
+  const item = currentClass();
+  const record = recordFor(date, item.id);
+  if (!record || item.students.some((name) => !record.statuses[name])) return;
+  const weekday = capitalise(weekdayFor(date));
+  const students = item.students.map((name) => ({ name, status: record.statuses[name] }));
+  const summary = {
+    action: 'saveClass', date, weekday, classId: item.id, category: item.category,
+    start: item.start, end: item.end, students
+  };
+  $('saveAttendance').disabled = true;
+  $('saveAttendance').textContent = 'Salvando...';
+  try {
+    const response = await postToBackend(summary);
+    const present = students.filter((student) => student.status === 'present').length;
+    const absent = students.length - present;
+    state.records[recordKey(date, item.id)] = { ...record, date, classId: item.id, savedAt: new Date().toISOString(), present, absent, statuses: record.statuses, remote: response.remote, submitted: response.submitted, folderUrl: response.folderUrl || record.folderUrl || '' };
+    persist();
+    toast(response.remote ? `${item.id} salva no Drive.` : response.submitted ? `${item.id} enviada para sincronização.` : `${item.id} salva neste dispositivo.`);
+    await maybeCompleteDay(date, weekday);
+    showView('callView');
+    renderClasses();
+  } catch (error) {
+    toast(error.message || 'Não foi possível salvar a chamada.');
+  } finally {
+    $('saveAttendance').textContent = 'Salvar chamada desta turma';
+    renderAttendance();
+  }
+}
+
+async function maybeCompleteDay(date, weekday) {
+  const required = activeClasses();
+  const saved = required.filter((item) => recordFor(date, item.id));
+  if (saved.length !== required.length) return;
+  const key = `${date}__${weekday}`;
+  if (state.completed[key]) return;
+  const files = saved.map((item) => ({ classId: item.id, url: recordFor(date, item.id).url || '' }));
+  const folderUrl = saved.map((item) => recordFor(date, item.id).folderUrl).find(Boolean) || '';
+  const response = await postToBackend({ action: 'completeDay', date, weekday, files, folderUrl });
+  state.completed[key] = { date, weekday, completedAt: new Date().toISOString(), remote: response.remote, submitted: response.submitted, pendingEmail: response.pendingEmail };
+  persist();
+}
+
+async function postToBackend(payload) {
+  const config = window.FREQUENCIA_CONFIG || {};
+  if (!config.apiUrl) return { ok: true, remote: false };
+  const options = { method: 'POST', mode: config.apiMode || 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) };
+  const response = await fetch(config.apiUrl, options);
+  if (options.mode === 'no-cors') return { ok: true, remote: false, submitted: true };
+  const data = await response.json();
+  if (!data.ok) throw new Error(data.error || 'O backend recusou o salvamento.');
+  return { ...data, remote: true, submitted: false };
+}
+
+function renderHistory() {
+  const records = Object.values(state.records).sort((a, b) => String(b.savedAt).localeCompare(String(a.savedAt)));
+  if (!records.length) {
+    $('historyList').innerHTML = '<div class="empty-state">Nenhuma chamada foi salva ainda. Abra “Chamada” para começar.</div>';
+    return;
+  }
+  const groups = {};
+  records.forEach((record) => {
+    const key = `${record.date}__${record.classId}`;
+    groups[key] = record;
+  });
+  $('historyList').innerHTML = Object.values(groups).map((record) => `<article class="history-card card"><h2>${escapeHtml(record.classId)}</h2><p>${escapeHtml(dateLabel(record.date))} · salva às ${new Date(record.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p><div class="history-badges"><span class="badge-present">${record.present || 0} presentes</span><span class="badge-absent">${record.absent || 0} faltas</span><span class="tag">${record.remote ? 'Drive confirmado' : record.submitted ? 'Envio solicitado' : 'Dispositivo'}</span></div></article>`).join('');
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value).replace(/`/g, '&#96;');
+}
+
+function toast(message) {
+  const element = $('toast');
+  element.textContent = message;
+  element.classList.add('show');
+  window.clearTimeout(toast.timer);
+  toast.timer = window.setTimeout(() => element.classList.remove('show'), 3200);
+}
+
+$('callDate').value = localDateInput();
+$('callDate').addEventListener('change', () => { if (currentView === 'callView') renderClasses(); });
+$('openCall').addEventListener('click', () => { showView('callView'); renderClasses(); });
+$('openHistory').addEventListener('click', () => { showView('historyView'); renderHistory(); });
+$('brandButton').addEventListener('click', () => showView('homeView'));
+$('backButton').addEventListener('click', () => {
+  if (currentView === 'attendanceView') { showView('callView'); renderClasses(); }
+  else showView('homeView');
 });
-byId('logout').onclick=()=>{sessionStorage.removeItem('gec-role');location.reload()};
-byId('backBtn').onclick=()=>{if(currentClass){currentClass=null;openTeacher(currentTeacher)}else gotoHome()};
-byId('search').oninput=renderStudents;
-byId('filter').onchange=renderStudents;
-byId('allPresent').onclick=()=>{turma().students.forEach(n=>statuses()[n]='present');save();renderStudents()};
-byId('save').onclick=()=>toast('Chamada salva com sucesso!');
-byId('newStudent').onclick=()=>byId('studentDialog').showModal();
-byId('studentForm').onsubmit=e=>{if(e.submitter.value==='cancel')return;e.preventDefault();const n=byId('studentName').value.trim();if(n){turma().students.push(n);byId('studentName').value='';save();byId('studentDialog').close();renderStudents()}};
-function toast(t){const x=byId('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2200)}
-byId('today').textContent=new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'}).format(new Date());
-byId('mascote').classList.remove('hidden');
+$('markAllPresent').addEventListener('click', markAllPresent);
+$('saveAttendance').addEventListener('click', saveAttendance);
+
+window.setTimeout(() => {
+  $('splash').classList.add('hidden');
+  showView('homeView');
+}, 2400);
