@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="animation-overrides.css">
   <link rel="stylesheet" href="date-help.css">
+  <link rel="stylesheet" href="date-shortcuts.css">
+  <link rel="stylesheet" href="no-class.css">
 </head>
 <body>
   <div id="splash" class="splash" aria-label="Carregando Goiás Esporte Clube">
@@ -64,7 +66,7 @@
           <h1>Escolha a turma</h1>
           <p id="callDateLabel" class="muted"></p>
         </div>
-        <label class="date-field">Data da chamada<input id="callDate" type="date"><small class="date-help">Avança para a próxima aula após salvar. Para editar, escolha outra data.</small></label>
+        <div class="date-controls"><label class="date-field">Data da chamada<input id="callDate" type="date"><small class="date-help">Avança para a próxima aula após salvar. Para editar, escolha outra data.</small></label><div class="date-shortcuts"><button id="previousClassDate" type="button" class="secondary">← Aula anterior</button><button id="nextClassDate" type="button" class="secondary">Próxima aula →</button></div></div>
       </div>
       <div id="classGrid" class="class-grid"></div>
       <div id="completionBanner" class="completion-banner hidden"></div>

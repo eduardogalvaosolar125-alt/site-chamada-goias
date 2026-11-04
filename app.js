@@ -32,6 +32,24 @@ function nextClassDate(value) {
   return localDateInput(date);
 }
 
+function previousClassDate(value) {
+  const date = new Date(`${value}T12:00:00`);
+  const day = date.getDay();
+  const daysBack = day === 2 ? 5 : day === 4 ? 2 : day < 2 ? day + 3 : day < 4 ? day - 2 : day - 4;
+  date.setDate(date.getDate() - daysBack);
+  return localDateInput(date);
+}
+
+function changeClassDate(direction) {
+  const current = selectedDate();
+  $('callDate').value = direction === 'next' ? nextClassDate(current) : previousClassDate(current);
+  if (currentView === 'callView') renderClasses();
+  if (currentView === 'attendanceView') {
+    const item = currentClass();
+    if (item) openAttendance(item.id);
+  }
+}
+
 function dateLabel(value) {
   if (!value) return '';
   return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'full' }).format(new Date(`${value}T12:00:00`));
@@ -91,15 +109,19 @@ function renderClasses() {
     const record = recordFor(date, item.id);
     const saved = Boolean(record);
     const disabled = item.pending || !validDay;
-    const status = item.pending ? 'Lista pendente' : saved ? `${record.present} presentes · ${record.absent} faltas` : 'Ainda não salva';
+    const noClass = Boolean(record && record.noClass);
+    const status = item.pending ? 'Lista pendente' : noClass ? 'Sem aula · não conta falta' : saved ? `${record.present} presentes · ${record.absent} faltas` : 'Ainda não salva';
     return `<article class="class-row${item.pending ? ' pending' : ''}">
       <div><div class="class-code">${escapeHtml(item.code)}</div><div class="class-time">${item.start} às ${item.end}</div></div>
-      <div><b>${escapeHtml(item.category)}</b><div class="class-detail"><span class="tag">${escapeHtml(weekday)}</span><span class="tag${item.pending ? ' pending' : ''}">${escapeHtml(status)}</span></div></div>
-      <button class="open-class" data-class="${item.id}" ${disabled ? 'disabled' : ''}>${item.pending ? 'Aguardando lista' : saved ? 'Editar chamada' : 'Abrir chamada'}</button>
+      <div><b>${escapeHtml(item.category)}</b><div class="class-detail"><span class="tag">${escapeHtml(weekday)}</span><span class="tag${item.pending ? ' pending' : noClass ? ' no-class' : ''}">${escapeHtml(status)}</span></div></div>
+      <div class="class-actions"><button class="open-class" data-class="${item.id}" ${disabled || noClass ? 'disabled' : ''}>${item.pending ? 'Aguardando lista' : noClass ? 'Sem aula' : saved ? 'Editar chamada' : 'Abrir chamada'}</button><button class="no-class-button" data-no-class="${item.id}" ${disabled ? 'disabled' : ''}>${noClass ? 'Desfazer sem aula' : 'Não teve aula'}</button></div>
     </article>`;
   }).join('');
   document.querySelectorAll('[data-class]').forEach((button) => {
     button.addEventListener('click', () => openAttendance(button.dataset.class));
+  });
+  document.querySelectorAll('[data-no-class]').forEach((button) => {
+    button.addEventListener('click', () => toggleNoClass(button.dataset.noClass));
   });
   const required = activeClasses();
   const savedCount = required.filter((item) => recordFor(date, item.id)).length;
@@ -113,6 +135,27 @@ function renderClasses() {
   } else {
     $('completionBanner').classList.add('hidden');
   }
+}
+
+async function toggleNoClass(classId) {
+  const item = allClasses().find((entry) => entry.id === classId);
+  const date = selectedDate();
+  if (!item) return;
+  const key = recordKey(date, classId);
+  const existing = recordFor(date, classId);
+  if (existing && existing.noClass) {
+    delete state.records[key];
+    persist();
+    renderClasses();
+    toast(`${item.id}: marcação “sem aula” desfeita.`);
+    return;
+  }
+  if (existing && !window.confirm(`A chamada da ${item.id} já está salva. Substituir por “sem aula”?`)) return;
+  state.records[key] = { date, classId, noClass: true, present: 0, absent: 0, statuses: {}, savedAt: new Date().toISOString(), remote: false, submitted: false };
+  persist();
+  toast(`${item.id}: sem aula. Ninguém receberá presença ou falta.`);
+  await maybeCompleteDay(date, capitalise(weekdayFor(date)));
+  renderClasses();
 }
 
 function openAttendance(classId) {
@@ -380,6 +423,8 @@ function toast(message) {
 
 $('callDate').value = localDateInput();
 $('callDate').addEventListener('change', () => { if (currentView === 'callView') renderClasses(); });
+$('previousClassDate').addEventListener('click', () => changeClassDate('previous'));
+$('nextClassDate').addEventListener('click', () => changeClassDate('next'));
 $('openCall').addEventListener('click', () => { showView('callView'); renderClasses(); });
 $('openHistory').addEventListener('click', () => { showView('historyView'); renderHistory(); });
 $('openManage').addEventListener('click', () => { showView('manageView'); renderManage(); });

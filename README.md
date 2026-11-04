@@ -8,6 +8,8 @@ Dentro da chamada, a lista também permite adicionar uma nova aluna, transferir 
 
 Depois que uma chamada é salva, o calendário avança automaticamente para a próxima terça ou quinta-feira. Para corrigir uma chamada anterior, basta tocar no campo de data e selecionar novamente a terça ou quinta desejada; as chamadas salvas continuam disponíveis para edição.
 
+Cada turma também tem o botão **Não teve aula**. Ele registra o dia como sem aula, sem lançar presença nem falta para qualquer aluna. O botão muda para **Desfazer sem aula** caso seja necessário reabrir aquela chamada.
+
 ## Rodar localmente
 
 Na raiz do projeto, execute um servidor estático, por exemplo `python3 -m http.server 4173`, e abra `http://localhost:4173`.
