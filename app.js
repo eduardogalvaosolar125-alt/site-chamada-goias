@@ -7,7 +7,12 @@ let state = loadState();
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    return { records: saved.records || {}, completed: saved.completed || {}, rosters: saved.rosters || {}, customClasses: saved.customClasses || [] };
+    return {
+      records: saved.records && typeof saved.records === 'object' ? saved.records : {},
+      completed: saved.completed && typeof saved.completed === 'object' ? saved.completed : {},
+      rosters: saved.rosters && typeof saved.rosters === 'object' ? saved.rosters : {},
+      customClasses: Array.isArray(saved.customClasses) ? saved.customClasses : []
+    };
   } catch (_) {
     return { records: {}, completed: {}, rosters: {}, customClasses: [] };
   }
@@ -252,7 +257,20 @@ async function saveAttendance() {
     const response = await postToBackend(summary);
     const present = students.filter((student) => student.status === 'present').length;
     const absent = students.length - present;
-    state.records[recordKey(date, item.id)] = { ...record, date, classId: item.id, savedAt: new Date().toISOString(), present, absent, statuses: record.statuses, remote: response.remote, submitted: response.submitted, folderUrl: response.folderUrl || record.folderUrl || '' };
+    state.records[recordKey(date, item.id)] = {
+      ...record,
+      date,
+      classId: item.id,
+      savedAt: new Date().toISOString(),
+      present,
+      absent,
+      statuses: record.statuses,
+      remote: response.remote,
+      submitted: response.submitted,
+      pdfId: response.fileId || response.pdfId || record.pdfId || '',
+      pdfUrl: response.url || response.pdfUrl || record.pdfUrl || '',
+      folderUrl: response.folderUrl || record.folderUrl || ''
+    };
     persist();
     toast(response.remote ? `${item.id} salva no Drive.` : response.submitted ? `${item.id} enviada para sincronização.` : `${item.id} salva neste dispositivo.`);
     await maybeCompleteDay(date, weekday);
@@ -273,7 +291,10 @@ async function maybeCompleteDay(date, weekday) {
   if (saved.length !== required.length) return;
   const key = `${date}__${weekday}`;
   if (state.completed[key]) return;
-  const files = saved.map((item) => ({ classId: item.id, url: recordFor(date, item.id).url || '' }));
+  const files = saved.map((item) => {
+    const record = recordFor(date, item.id);
+    return { classId: item.id, pdfId: record.pdfId || '', url: record.pdfUrl || '' };
+  });
   const folderUrl = saved.map((item) => recordFor(date, item.id).folderUrl).find(Boolean) || '';
   const response = await postToBackend({ action: 'completeDay', date, weekday, files, folderUrl });
   state.completed[key] = { date, weekday, completedAt: new Date().toISOString(), remote: response.remote, submitted: response.submitted, pendingEmail: response.pendingEmail };
@@ -402,7 +423,7 @@ function renderHistory() {
     const key = `${record.date}__${record.classId}`;
     groups[key] = record;
   });
-  $('historyList').innerHTML = Object.values(groups).map((record) => `<article class="history-card card"><h2>${escapeHtml(record.classId)}</h2><p>${escapeHtml(dateLabel(record.date))} · salva às ${new Date(record.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p><div class="history-badges"><span class="badge-present">${record.present || 0} presentes</span><span class="badge-absent">${record.absent || 0} faltas</span><span class="tag">${record.remote ? 'Drive confirmado' : record.submitted ? 'Envio solicitado' : 'Dispositivo'}</span></div></article>`).join('');
+  $('historyList').innerHTML = Object.values(groups).map((record) => `<article class="history-card card"><h2>${escapeHtml(record.classId)}</h2><p>${escapeHtml(dateLabel(record.date))} · salva às ${new Date(record.savedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p><div class="history-badges"><span class="badge-present">${record.present || 0} presentes</span><span class="badge-absent">${record.absent || 0} faltas</span><span class="tag">${record.remote ? 'Drive confirmado' : record.submitted ? 'Envio solicitado' : 'Dispositivo'}</span>${record.pdfUrl ? `<a class="tag" href="${escapeAttr(record.pdfUrl)}" target="_blank" rel="noopener">Abrir PDF</a>` : ''}</div></article>`).join('');
 }
 
 function escapeHtml(value) {

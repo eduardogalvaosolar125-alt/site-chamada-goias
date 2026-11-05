@@ -1,5 +1,4 @@
 const ROOT_FOLDER_NAME = 'Frequência de turmas do Goiás Esporte Clube';
-const DEFAULT_EMAIL = 'professorjoaogec@gmail.com';
 const ALLOWED_CLASSES = {
   'VAG-01': { category: 'Sub-11', start: '16:00', end: '17:00' },
   'VAG-02': { category: 'Sub-13', start: '17:20', end: '18:20' },
@@ -47,8 +46,8 @@ function completeDay_(payload) {
   validateDate_(payload.date);
   if (payload.weekday !== 'Terça-feira' && payload.weekday !== 'Quinta-feira') throw new Error('O dia deve ser terça ou quinta-feira.');
   payload.files.forEach(function(file) { validateClassId_(file.classId); });
-  const email = PropertiesService.getScriptProperties().getProperty('DESTINATION_EMAIL') || DEFAULT_EMAIL;
-  if (!email || email === DEFAULT_EMAIL) return { ok: true, pendingEmail: true, files: payload.files.length };
+  const email = PropertiesService.getScriptProperties().getProperty('DESTINATION_EMAIL');
+  if (!email) return { ok: true, pendingEmail: true, files: payload.files.length };
   const key = 'email-sent-' + payload.date + '-' + (payload.weekday || 'dia');
   const props = PropertiesService.getScriptProperties();
   if (props.getProperty(key)) return { ok: true, alreadySent: true };
@@ -108,10 +107,16 @@ function validatePayload_(payload) {
 
 function validateDate_(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value))) throw new Error('Data inválida.');
+  const parts = String(value).split('-').map(Number);
+  const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+  if (date.getUTCFullYear() !== parts[0] || date.getUTCMonth() !== parts[1] - 1 || date.getUTCDate() !== parts[2]) throw new Error('Data inválida.');
 }
 
 function validateClassId_(value) {
   if (!/^[A-Za-z0-9][A-Za-z0-9_-]{1,30}$/.test(String(value || ''))) throw new Error('Código de turma inválido: ' + value);
+  const classId = String(value);
+  const allowCustom = PropertiesService.getScriptProperties().getProperty('ALLOW_CUSTOM_CLASSES') === 'true';
+  if (!ALLOWED_CLASSES[classId] && !allowCustom) throw new Error('Turma não autorizada: ' + classId);
 }
 
 function safeWeekday_(value) {
